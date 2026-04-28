@@ -1,0 +1,1320 @@
+[
+  {
+    "id": "R-001",
+    "version": "1.0.0",
+    "category": "pcos",
+    "name": "PCOS · suggest balanced macros, fiber forward",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "hasCondition": ["PCOS", "PCOD"] },
+    "action": {
+      "nutritionAdjustment": "pcos_fiber_protein_priority",
+      "messageCode": "pcos_balanced_macros_guidance"
+    }
+  },
+  {
+    "id": "R-002",
+    "version": "1.0.0",
+    "category": "pcos",
+    "name": "PCOS · avoid 'treats insulin resistance' phrasing",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["PCOS", "PCOD"],
+      "aiResponseContains": ["treats insulin resistance", "cure your pcos", "reverses pcos", "diagnosed with pcos"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove any claim that the plan treats or reverses insulin resistance or PCOS. Use 'PCOS-supportive lifestyle' phrasing instead.",
+      "addDisclaimer": "This plan supports a PCOS-friendly lifestyle. It is not a treatment for PCOS or insulin resistance."
+    }
+  },
+  {
+    "id": "R-003",
+    "version": "1.0.0",
+    "category": "pcos",
+    "name": "PCOS · prioritize protein at each meal",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "hasCondition": ["PCOS", "PCOD"] },
+    "action": {
+      "nutritionAdjustment": "pcos_protein_anchor_meals",
+      "messageCode": "pcos_protein_each_meal"
+    }
+  },
+  {
+    "id": "R-004",
+    "version": "1.0.0",
+    "category": "pcos",
+    "name": "PCOS · reduce refined carb-only meal suggestions",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "hasCondition": ["PCOS", "PCOD"] },
+    "action": {
+      "nutritionAdjustment": "pcos_limit_refined_carbs",
+      "messageCode": "pcos_balanced_carbs_guidance"
+    }
+  },
+  {
+    "id": "R-005",
+    "version": "1.0.0",
+    "category": "pcos",
+    "name": "PCOS · do not suggest aggressive calorie restriction",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["PCOS", "PCOD"] },
+    "action": {
+      "nutritionAdjustment": "pcos_min_1400_kcal",
+      "messageCode": "pcos_no_crash_diet"
+    }
+  },
+  {
+    "id": "R-006",
+    "version": "1.0.0",
+    "category": "pcos",
+    "name": "PCOS · suggest strength training as primary modality",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "hasCondition": ["PCOS", "PCOD"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "pcos_strength_preferred"
+    }
+  },
+  {
+    "id": "R-007",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI · never recommend supplement doses",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "aiResponseContains": [
+        "take 2000 iu", "take 1000 iu", "take 500 mg", "take 400 mg",
+        "supplement with", "dose of", "milligrams of", "micrograms of",
+        "recommend inositol", "suggest inositol", "take inositol",
+        "recommend iron supplement", "take iron", "recommend vitamin d supplement"
+      ]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove all supplement dosage recommendations. Replace with food-first guidance and suggest discussing supplementation with a clinician.",
+      "addDisclaimer": "For supplement dosing, please consult a qualified clinician."
+    }
+  },
+  {
+    "id": "R-008",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI · never use diagnostic phrasing",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "aiResponseContains": [
+        "you have pcos", "you have diabetes", "you are diabetic", "you have thyroid",
+        "you have anemia", "you are anemic", "you have endometriosis",
+        "your diagnosis", "you are diagnosed"
+      ]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Replace all diagnostic statements ('you have X') with 'based on what you told us about X' or 'given your self-reported X'.",
+      "addDisclaimer": "We provide wellness support based on what you tell us. We do not diagnose medical conditions."
+    }
+  },
+  {
+    "id": "R-009",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI · never advise stop or start medication",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "aiResponseContains": [
+        "stop taking", "stop your medication", "start medication",
+        "reduce your metformin", "increase your dose", "change your prescription"
+      ]
+    },
+    "action": {
+      "blockAiResponse": true,
+      "messageCode": "ai_medication_advice_blocked"
+    }
+  },
+  {
+    "id": "R-010",
+    "version": "1.0.0",
+    "category": "prediabetes",
+    "name": "Prediabetes · suggest 5–7% initial weight-loss goal",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["PREDIABETES"] },
+    "action": {
+      "nutritionAdjustment": "prediabetes_5_7_pct_goal",
+      "messageCode": "prediabetes_modest_weight_loss"
+    }
+  },
+  {
+    "id": "R-011",
+    "version": "1.0.0",
+    "category": "prediabetes",
+    "name": "Prediabetes · suggest 150 min/week moderate activity",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["PREDIABETES"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "prediabetes_150_min_activity"
+    }
+  },
+  {
+    "id": "R-012",
+    "version": "1.0.0",
+    "category": "prediabetes",
+    "name": "Prediabetes · balanced carb distribution across meals",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "hasCondition": ["PREDIABETES"] },
+    "action": {
+      "nutritionAdjustment": "prediabetes_even_carb_distribution",
+      "messageCode": "prediabetes_carb_balance"
+    }
+  },
+  {
+    "id": "R-013",
+    "version": "1.0.0",
+    "category": "prediabetes",
+    "name": "Prediabetes · avoid 'blood sugar treatment' phrasing",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["PREDIABETES"],
+      "aiResponseContains": [
+        "treats prediabetes", "cures prediabetes", "reverses prediabetes",
+        "lower your blood sugar medication", "treats insulin resistance"
+      ]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Replace treatment claims with 'prediabetes-supportive lifestyle' phrasing.",
+      "addDisclaimer": "This plan supports a blood-sugar-friendly lifestyle. It is not a treatment for prediabetes."
+    }
+  },
+  {
+    "id": "R-014",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Workout · stop on chest pain · escalate",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["chest_pain", "chest_tightness"] },
+    "action": {
+      "workoutAdjustment": "suppress",
+      "showUrgentCareBanner": true,
+      "createSafetyFlag": { "severity": "urgent", "signal": "Chest pain logged during or after workout" },
+      "messageCode": "red_flag_chest_pain_stop"
+    }
+  },
+  {
+    "id": "R-015",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Chest pain · suppress exercise for 24h",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["chest_pain"] },
+    "action": {
+      "workoutAdjustment": "suppress",
+      "adminAlert": true
+    }
+  },
+  {
+    "id": "R-016",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Dizziness during workout · escalate",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["dizziness", "lightheadedness"] },
+    "action": {
+      "workoutAdjustment": "suppress",
+      "createSafetyFlag": { "severity": "high", "signal": "Dizziness or lightheadedness reported" },
+      "messageCode": "red_flag_dizziness_rest"
+    }
+  },
+  {
+    "id": "R-017",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Shortness of breath at rest · escalate",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["shortness_of_breath"] },
+    "action": {
+      "workoutAdjustment": "suppress",
+      "createSafetyFlag": { "severity": "urgent", "signal": "Shortness of breath at rest reported" },
+      "showUrgentCareBanner": true
+    }
+  },
+  {
+    "id": "R-018",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Missed period · pregnancy possibility check",
+    "status": "live",
+    "severity": "warn",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["missed_period"] },
+    "action": {
+      "createSafetyFlag": { "severity": "high", "signal": "Missed period reported — pregnancy possible" },
+      "messageCode": "missed_period_clinician_check"
+    }
+  },
+  {
+    "id": "R-019",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Severe headache with dizziness · escalate",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "symptomsAll": ["headache", "dizziness"]
+    },
+    "action": {
+      "createSafetyFlag": { "severity": "high", "signal": "Severe headache with dizziness" },
+      "messageCode": "red_flag_headache_dizziness"
+    }
+  },
+  {
+    "id": "R-020",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Fainting or loss of consciousness · urgent",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["fainting", "syncope", "loss_of_consciousness"] },
+    "action": {
+      "workoutAdjustment": "suppress",
+      "showUrgentCareBanner": true,
+      "createSafetyFlag": { "severity": "urgent", "signal": "Fainting or loss of consciousness reported" }
+    }
+  },
+  {
+    "id": "R-021",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Severe pain score 9–10 · urgent care",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "energyScoreLte": 2, "symptomsInclude": ["severe_pain"] },
+    "action": {
+      "showUrgentCareBanner": true,
+      "createSafetyFlag": { "severity": "urgent", "signal": "Severe pain (9–10/10) reported" }
+    }
+  },
+  {
+    "id": "R-022",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Severe abdominal pain repeated · escalation",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["severe_abdominal_pain"], "cycleDurationDaysGte": 1 },
+    "action": {
+      "createSafetyFlag": { "severity": "high", "signal": "Severe abdominal pain repeated" },
+      "messageCode": "severe_abdominal_pain_clinician"
+    }
+  },
+  {
+    "id": "R-023",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Suicidal ideation · crisis resources",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "aiResponseContains": ["suicidal", "want to die", "end my life", "hurt myself"]
+    },
+    "action": {
+      "blockAiResponse": true,
+      "showUrgentCareBanner": true,
+      "createSafetyFlag": { "severity": "urgent", "signal": "Suicidal ideation or self-harm mention detected" },
+      "messageCode": "crisis_resources"
+    }
+  },
+  {
+    "id": "R-024",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Eating disorder text · crisis route",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "aiResponseContains": ["binge and purge", "purging", "starving myself", "laxatives to lose"]
+    },
+    "action": {
+      "blockAiResponse": true,
+      "createSafetyFlag": { "severity": "urgent", "signal": "Eating disorder behavior described" },
+      "messageCode": "ed_crisis_resources"
+    }
+  },
+  {
+    "id": "R-025",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Very high heart rate logged · escalate",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["palpitations", "racing_heart"] },
+    "action": {
+      "workoutAdjustment": "suppress",
+      "createSafetyFlag": { "severity": "high", "signal": "Heart palpitations or racing heart reported" }
+    }
+  },
+  {
+    "id": "R-026",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Pregnancy · forbid weight-loss messaging",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "pregnancyStatus": ["PREGNANT"] },
+    "action": {
+      "nutritionAdjustment": "pregnancy_no_deficit",
+      "messageCode": "pregnancy_no_weight_loss"
+    }
+  },
+  {
+    "id": "R-027",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Pregnancy · suppress high-intensity exercise",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "pregnancyStatus": ["PREGNANT"] },
+    "action": {
+      "workoutAdjustment": "low_impact_only",
+      "messageCode": "pregnancy_low_impact_only"
+    }
+  },
+  {
+    "id": "R-028",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Breastfeeding · do not suggest calorie deficit",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "pregnancyStatus": ["BREASTFEEDING"] },
+    "action": {
+      "nutritionAdjustment": "breastfeeding_no_deficit",
+      "messageCode": "breastfeeding_calorie_support"
+    }
+  },
+  {
+    "id": "R-029",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Heavy bleeding + dizziness → urgent care escalation",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "cycleFlow": ["heavy", "very_heavy"],
+      "symptomsInclude": ["dizziness", "shortness_of_breath"],
+      "cycleDurationDaysGte": 1
+    },
+    "action": {
+      "showUrgentCareBanner": true,
+      "workoutAdjustment": "suppress",
+      "createSafetyFlag": { "severity": "urgent", "signal": "Heavy bleeding + dizziness reported" },
+      "messageCode": "red_flag_heavy_bleed_dizziness",
+      "adminAlert": true
+    }
+  },
+  {
+    "id": "R-030",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Very heavy bleeding alone · safety check",
+    "status": "live",
+    "severity": "warn",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "cycleFlow": ["very_heavy"],
+      "cycleDurationDaysGte": 3
+    },
+    "action": {
+      "createSafetyFlag": { "severity": "high", "signal": "Very heavy bleeding for 3+ days" },
+      "messageCode": "heavy_bleeding_clinician_check"
+    }
+  },
+  {
+    "id": "R-031",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Iron deficiency · fatigue messaging adjustment",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["IRON_DEFICIENCY", "ANEMIA"] },
+    "action": {
+      "nutritionAdjustment": "iron_deficiency_food_priority",
+      "messageCode": "iron_deficiency_fatigue_context"
+    }
+  },
+  {
+    "id": "R-032",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Iron deficiency · suggest iron-rich foods + vitamin C pairing",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "hasCondition": ["IRON_DEFICIENCY", "ANEMIA"] },
+    "action": {
+      "nutritionAdjustment": "iron_vitamin_c_pairing",
+      "messageCode": "iron_rich_foods_guidance"
+    }
+  },
+  {
+    "id": "R-033",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Iron deficiency · do not prescribe supplement dose",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["IRON_DEFICIENCY", "ANEMIA"],
+      "aiResponseContains": ["take iron supplement", "mg of iron", "ferrous sulphate", "iron tablets"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove iron supplement dosing. Replace with food-first guidance and clinician referral for supplementation."
+    }
+  },
+  {
+    "id": "R-034",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "B12 deficiency (vegan) · fortified foods emphasis",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["VITAMIN_B12_DEFICIENCY"],
+      "dietType": ["VEGAN"]
+    },
+    "action": {
+      "nutritionAdjustment": "b12_fortified_foods_vegan",
+      "messageCode": "b12_vegan_clinician_supplement"
+    }
+  },
+  {
+    "id": "R-035",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Vitamin D deficiency · lifestyle and clinician guidance",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["VITAMIN_D_DEFICIENCY"] },
+    "action": {
+      "nutritionAdjustment": "vitamin_d_dietary_tracking",
+      "messageCode": "vitamin_d_clinician_testing"
+    }
+  },
+  {
+    "id": "R-036",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Vitamin D deficiency · do not prescribe dose",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["VITAMIN_D_DEFICIENCY"],
+      "aiResponseContains": ["take vitamin d", "iu of vitamin d", "2000 iu", "4000 iu", "supplement vitamin d"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove Vitamin D dosing. Suggest dietary sources and clinician-guided supplementation."
+    }
+  },
+  {
+    "id": "R-037",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Vegan · flag potential B12, iron, omega-3 gaps",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "dietType": ["VEGAN"] },
+    "action": {
+      "nutritionAdjustment": "vegan_micronutrient_watch",
+      "messageCode": "vegan_key_nutrients_guidance"
+    }
+  },
+  {
+    "id": "R-038",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Vegan + B12 deficiency · clinician follow-up required",
+    "status": "live",
+    "severity": "warn",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["VITAMIN_B12_DEFICIENCY"],
+      "dietType": ["VEGAN"]
+    },
+    "action": {
+      "createSafetyFlag": { "severity": "review", "signal": "Vegan user with B12 deficiency — clinician follow-up suggested" },
+      "messageCode": "b12_deficiency_vegan_urgent"
+    }
+  },
+  {
+    "id": "R-039",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "ED history · suppress weight-loss plan options",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["EATING_DISORDER"] },
+    "action": {
+      "nutritionAdjustment": "ed_history_no_deficit",
+      "messageCode": "ed_history_professional_support"
+    }
+  },
+  {
+    "id": "R-040",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "ED history · do not mention weight loss as primary goal",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["EATING_DISORDER"],
+      "aiResponseContains": ["lose weight", "calorie deficit", "eat less", "reduce calories"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Do not focus on weight loss or calorie restriction for this user. Focus on nourishment, energy, and wellbeing."
+    }
+  },
+  {
+    "id": "R-041",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "Calorie intake < 900 kcal · ED risk flag",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "avgKcal7dLt": 900 },
+    "action": {
+      "showInterventionMessage": true,
+      "createSafetyFlag": { "severity": "urgent", "signal": "Calorie intake < 900 kcal average over 7 days" },
+      "messageCode": "low_calorie_intervention",
+      "adminAlert": true
+    }
+  },
+  {
+    "id": "R-042",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "Calorie intake < 1100 kcal 3 days · warn",
+    "status": "live",
+    "severity": "warn",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "avgKcal7dLt": 1100, "kcalBelowTargetDaysGte": 3 },
+    "action": {
+      "showInterventionMessage": true,
+      "messageCode": "low_calorie_nudge"
+    }
+  },
+  {
+    "id": "R-043",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "Hard calorie floor — never plan below 1200 kcal",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "aiResponseContains": ["1100 calories", "1000 calories", "900 calories", "800 calories"] },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Increase any calorie suggestion to a minimum of 1200 kcal/day. Never suggest below 1200 kcal."
+    }
+  },
+  {
+    "id": "R-044",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "Intermittent fasting · guard for ED history",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["EATING_DISORDER"],
+      "aiResponseContains": ["intermittent fasting", "16:8", "fasting window", "skip breakfast"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove intermittent fasting suggestions for users with eating disorder history. Focus on regular, balanced eating patterns."
+    }
+  },
+  {
+    "id": "R-045",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "Eating disorder · avoid body weight commentary",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["EATING_DISORDER"],
+      "aiResponseContains": ["you need to lose", "you are overweight", "you are obese", "lose more weight"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove weight commentary for this user. Focus on health behaviors, not body size."
+    }
+  },
+  {
+    "id": "R-046",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "Very low energy + low calories · dual flag",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "energyScoreLte": 3, "avgKcal7dLt": 1200 },
+    "action": {
+      "createSafetyFlag": { "severity": "high", "signal": "Very low energy + low calorie intake" },
+      "messageCode": "low_energy_low_calories_support"
+    }
+  },
+  {
+    "id": "R-047",
+    "version": "1.0.0",
+    "category": "ed_risk",
+    "name": "ED history · flag for clinical review if logging < 3 meals for 5 days",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["EATING_DISORDER"],
+      "avgKcal7dLt": 1000
+    },
+    "action": {
+      "createSafetyFlag": { "severity": "high", "signal": "User with ED history logging very low intake" },
+      "adminAlert": true
+    }
+  },
+  {
+    "id": "R-048",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Menstrual phase + heavy flow · low-impact workout",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["menstrual"],
+      "cycleFlow": ["heavy", "very_heavy"]
+    },
+    "action": {
+      "workoutAdjustment": "low_impact_only",
+      "messageCode": "menstrual_heavy_low_impact"
+    }
+  },
+  {
+    "id": "R-049",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Menstrual phase + pain ≥ 7 · rest option",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["menstrual"],
+      "symptomsInclude": ["severe_cramps", "high_pain"]
+    },
+    "action": {
+      "workoutAdjustment": "rest",
+      "messageCode": "menstrual_high_pain_rest_option"
+    }
+  },
+  {
+    "id": "R-050",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Luteal phase · reduce HIIT intensity",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "cyclePhase": ["luteal"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "luteal_reduce_intensity"
+    }
+  },
+  {
+    "id": "R-051",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Luteal + energy ≤ 4 · backup workout only",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["luteal"],
+      "energyScoreLte": 4
+    },
+    "action": {
+      "workoutAdjustment": "backup_only",
+      "messageCode": "luteal_low_energy_backup"
+    }
+  },
+  {
+    "id": "R-052",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Pregnancy · forbid weight-loss messaging (full block)",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "pregnancyStatus": ["PREGNANT"],
+      "aiResponseContains": ["lose weight", "calorie deficit", "weight loss goal", "reduce body fat"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove all weight-loss suggestions for pregnant users. Focus on nutrition for pregnancy health."
+    }
+  },
+  {
+    "id": "R-053",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Postpartum · no aggressive deficit for 12 weeks",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "pregnancyStatus": ["POSTPARTUM"] },
+    "action": {
+      "nutritionAdjustment": "postpartum_gentle_deficit_only",
+      "messageCode": "postpartum_recovery_nutrition"
+    }
+  },
+  {
+    "id": "R-054",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Pregnancy · suggest folic acid food sources",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "pregnancyStatus": ["PREGNANT", "TRYING"] },
+    "action": {
+      "nutritionAdjustment": "folate_rich_foods_priority",
+      "messageCode": "pregnancy_folate_guidance"
+    }
+  },
+  {
+    "id": "R-055",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Pregnancy · no high-intensity interval training",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "pregnancyStatus": ["PREGNANT"],
+      "aiResponseContains": ["hiit", "high intensity interval", "sprint", "plyometrics", "jumping jacks"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Replace high-intensity suggestions with low-to-moderate intensity alternatives suitable for pregnancy."
+    }
+  },
+  {
+    "id": "R-056",
+    "version": "1.0.0",
+    "category": "pregnancy_breastfeeding",
+    "name": "Trying to conceive · no aggressive IF",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "pregnancyStatus": ["TRYING"] },
+    "action": {
+      "nutritionAdjustment": "ttc_no_aggressive_fasting",
+      "messageCode": "ttc_regular_eating_guidance"
+    }
+  },
+  {
+    "id": "R-057",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Knee injury · no plyometrics",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "injuries": ["knee"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "knee_injury_no_plyometrics"
+    }
+  },
+  {
+    "id": "R-058",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Back injury · no heavy barbell deadlift",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "injuries": ["back"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "back_injury_no_heavy_lift"
+    }
+  },
+  {
+    "id": "R-059",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Shoulder injury · no overhead pressing",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "injuries": ["shoulder"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "shoulder_injury_no_overhead"
+    }
+  },
+  {
+    "id": "R-060",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Ankle injury · no running or jump-heavy workouts",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "injuries": ["ankle"] },
+    "action": {
+      "workoutAdjustment": "low_impact_only",
+      "messageCode": "ankle_injury_no_impact"
+    }
+  },
+  {
+    "id": "R-061",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Luteal phase · suggest reduced HIIT",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "cyclePhase": ["luteal"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "luteal_hiit_swap_suggestion"
+    }
+  },
+  {
+    "id": "R-062",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Follicular phase · progressive strength OK",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "cyclePhase": ["follicular"] },
+    "action": {
+      "messageCode": "follicular_progressive_load_ok"
+    }
+  },
+  {
+    "id": "R-063",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Menstrual day 1–2 · lighter workout default",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["menstrual"],
+      "cycleDurationDaysGte": 0
+    },
+    "action": {
+      "workoutAdjustment": "low_impact_only",
+      "messageCode": "menstrual_day_1_2_lighter"
+    }
+  },
+  {
+    "id": "R-064",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Late luteal + bloating + cravings · nutrition comfort note",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["luteal"],
+      "symptomsInclude": ["bloating", "cravings"]
+    },
+    "action": {
+      "nutritionAdjustment": "luteal_craving_snack_plan",
+      "messageCode": "luteal_craving_fiber_snacks"
+    }
+  },
+  {
+    "id": "R-065",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "PMS mood symptoms · prioritize sleep messaging",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["luteal"],
+      "symptomsInclude": ["mood_low", "anxiety", "irritability"]
+    },
+    "action": {
+      "messageCode": "luteal_mood_sleep_magnesium_note"
+    }
+  },
+  {
+    "id": "R-066",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Ovulation estimate phase · warm-up emphasis",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "cyclePhase": ["ovulation_estimate"] },
+    "action": {
+      "messageCode": "ovulation_warm_up_emphasis"
+    }
+  },
+  {
+    "id": "R-067",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Irregular cycle · lower prediction confidence",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "symptomsInclude": ["irregular_cycle"] },
+    "action": {
+      "messageCode": "irregular_cycle_log_more"
+    }
+  },
+  {
+    "id": "R-068",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Cycle day 1 pain ≥ 7 · full rest offered",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["menstrual"],
+      "symptomsInclude": ["severe_cramps"],
+      "cycleDurationDaysGte": 0
+    },
+    "action": {
+      "workoutAdjustment": "rest",
+      "messageCode": "day_1_severe_cramps_rest"
+    }
+  },
+  {
+    "id": "R-069",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Cycle spotting + dizziness · flag",
+    "status": "live",
+    "severity": "warn",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "symptomsAll": ["spotting", "dizziness"]
+    },
+    "action": {
+      "createSafetyFlag": { "severity": "high", "signal": "Spotting + dizziness — possible anemia or other concern" },
+      "messageCode": "spotting_dizziness_clinician"
+    }
+  },
+  {
+    "id": "R-070",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Cycle > 45 days unreported · flag for review",
+    "status": "live",
+    "severity": "warn",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "symptomsInclude": ["late_period_45_days"] },
+    "action": {
+      "createSafetyFlag": { "severity": "review", "signal": "Cycle length > 45 days — clinician check suggested" },
+      "messageCode": "long_cycle_clinician_check"
+    }
+  },
+  {
+    "id": "R-071",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Injury · stop if pain during exercise",
+    "status": "live",
+    "severity": "warn",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "symptomsInclude": ["exercise_pain", "joint_pain"] },
+    "action": {
+      "workoutAdjustment": "reduce_intensity",
+      "messageCode": "exercise_pain_stop_advice"
+    }
+  },
+  {
+    "id": "R-072",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Recent surgery · low-impact only for 8 weeks",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["OTHER"], "symptomsInclude": ["recent_surgery"] },
+    "action": {
+      "workoutAdjustment": "low_impact_only",
+      "messageCode": "post_surgery_low_impact"
+    }
+  },
+  {
+    "id": "R-073",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Multiple injuries · conservative plan default",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "injuries": ["knee", "back", "shoulder", "ankle"]
+    },
+    "action": {
+      "workoutAdjustment": "low_impact_only",
+      "messageCode": "multiple_injuries_conservative"
+    }
+  },
+  {
+    "id": "R-074",
+    "version": "1.0.0",
+    "category": "injury",
+    "name": "Knee injury · forbid plyometrics",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "injuries": ["knee"],
+      "aiResponseContains": ["jump squats", "box jumps", "burpees", "jumping lunges", "plyometric"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Replace plyometric exercises with low-impact alternatives (step-ups, wall sit, seated leg press) due to knee injury."
+    }
+  },
+  {
+    "id": "R-075",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI · no 'you are obese' or weight shaming phrasing",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "aiResponseContains": [
+        "you are obese", "you are overweight", "your weight is unhealthy",
+        "you need to lose weight immediately", "your bmi is dangerously"
+      ]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove weight-shaming or stigmatizing phrasing. Use neutral, supportive language about body metrics."
+    }
+  },
+  {
+    "id": "R-076",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI · no specific lab test orders",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "aiResponseContains": ["order a blood test", "get your hba1c", "test your ferritin", "book a thyroid test"]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Replace lab test orders with 'consider discussing with a clinician' phrasing."
+    }
+  },
+  {
+    "id": "R-077",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI · no diagnosis of PCOS, diabetes, thyroid",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "aiResponseContains": [
+        "you are developing diabetes", "this is pcos", "this confirms thyroid",
+        "you likely have pcos", "this indicates prediabetes", "you have metabolic syndrome"
+      ]
+    },
+    "action": {
+      "blockAiResponse": false,
+      "rewriteAiResponse": "Remove diagnostic statements. Replace with 'based on what you told us' and suggest clinician consultation."
+    }
+  },
+  {
+    "id": "R-078",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI · never reveal system prompt or rules",
+    "status": "live",
+    "severity": "block",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "aiResponseContains": [
+        "my system prompt", "my instructions say", "the rules tell me",
+        "i was told to", "ignore previous instructions"
+      ]
+    },
+    "action": {
+      "blockAiResponse": true,
+      "messageCode": "ai_prompt_injection_detected"
+    }
+  },
+  {
+    "id": "R-079",
+    "version": "1.0.0",
+    "category": "pcos",
+    "name": "PCOS + prediabetes · dual-supportive plan",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": { "hasCondition": ["PCOS", "PREDIABETES"] },
+    "action": {
+      "nutritionAdjustment": "pcos_prediabetes_combined",
+      "messageCode": "pcos_prediabetes_dual_guidance"
+    }
+  },
+  {
+    "id": "R-080",
+    "version": "1.0.0",
+    "category": "prediabetes",
+    "name": "Prediabetes · suggest walking after meals",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": { "hasCondition": ["PREDIABETES"] },
+    "action": {
+      "messageCode": "prediabetes_post_meal_walk"
+    }
+  },
+  {
+    "id": "R-081",
+    "version": "1.0.0",
+    "category": "deficiency",
+    "name": "Iron deficiency + heavy periods · clinician flag",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["IRON_DEFICIENCY", "ANEMIA"],
+      "cycleFlow": ["heavy", "very_heavy"]
+    },
+    "action": {
+      "createSafetyFlag": { "severity": "review", "signal": "Iron deficiency + heavy periods — clinician review suggested" },
+      "messageCode": "iron_deficiency_heavy_period_clinician"
+    }
+  },
+  {
+    "id": "R-082",
+    "version": "1.0.0",
+    "category": "cycle_adjustment",
+    "name": "Menstrual fatigue + below calorie target · adjust workout",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": false,
+    "condition": {
+      "cyclePhase": ["menstrual"],
+      "energyScoreLte": 5,
+      "kcalBelowTargetDaysGte": 2
+    },
+    "action": {
+      "workoutAdjustment": "low_impact_only",
+      "nutritionAdjustment": "increase_balanced_meal_prompt",
+      "messageCode": "menstrual_fatigue_fuel_up"
+    }
+  },
+  {
+    "id": "R-083",
+    "version": "1.0.0",
+    "category": "red_flag",
+    "name": "Combined red flag: fatigue + dizziness + very heavy bleeding",
+    "status": "live",
+    "severity": "flag",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "cycleFlow": ["very_heavy"],
+      "symptomsAll": ["fatigue", "dizziness"]
+    },
+    "action": {
+      "workoutAdjustment": "suppress",
+      "showUrgentCareBanner": true,
+      "createSafetyFlag": { "severity": "urgent", "signal": "Fatigue + dizziness + very heavy bleeding — possible anemia emergency" },
+      "adminAlert": true
+    }
+  },
+  {
+    "id": "R-084",
+    "version": "1.0.0",
+    "category": "ai_safety",
+    "name": "AI response · add medical disclaimer for sensitive condition context",
+    "status": "live",
+    "severity": "adjust",
+    "requiresMedicalDisclaimer": true,
+    "condition": {
+      "hasCondition": ["PCOS", "PREDIABETES", "THYROID_HYPO", "THYROID_HYPER", "ENDOMETRIOSIS"]
+    },
+    "action": {
+      "addDisclaimer": "This guidance is based on your self-reported health context. Please consult a qualified clinician for diagnosis, treatment, or personalized medical advice."
+    }
+  }
+]
