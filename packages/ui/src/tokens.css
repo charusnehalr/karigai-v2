@@ -1,0 +1,37 @@
+/* karigai design tokens — ported from design/brand.jsx */
+
+:root {
+  /* Surfaces */
+  --kg-cream: #F5EFE6;
+  --kg-paper: #FAF6EF;
+  --kg-card: #FFFFFF;
+  --kg-shell: #EFE7DA;
+
+  /* Ink */
+  --kg-ink: #1F1B16;
+  --kg-ink2: #3A332B;
+  --kg-muted: #7A7066;
+  --kg-hairline: #E5DCCB;
+
+  /* Accents */
+  --kg-clay: #B8704F;
+  --kg-clay-soft: #E9C8B5;
+  --kg-sage: #7A8B6F;
+  --kg-sage-soft: #CFD4C3;
+  --kg-bone: #E8DCC8;
+  --kg-blush: #E8B4A8;
+
+  /* Semantic */
+  --kg-alert: #C25450;
+  --kg-amber: #C99356;
+
+  /* Dark mode surfaces */
+  --kg-ink-deep: #0F0E0C;
+  --kg-ink-surf: #1A1814;
+  --kg-ink-line: #2A2620;
+
+  /* Typography */
+  --font-display: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
+  --font-body: "Geist", "Inter", -apple-system, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+}

@@ -1,0 +1,729 @@
+// karigai — PostgreSQL schema via Prisma
+// All health-sensitive fields encrypted at field level in application layer (Phase 11)
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ── Enums ────────────────────────────────────────────────────
+
+enum UnitSystem {
+  METRIC
+  IMPERIAL
+}
+
+enum BiologicalSex {
+  FEMALE
+  MALE
+  INTERSEX
+  PREFER_NOT_TO_SAY
+}
+
+enum PregnancyStatus {
+  NO
+  PREGNANT
+  TRYING
+  POSTPARTUM
+  BREASTFEEDING
+  PREFER_NOT_TO_SAY
+}
+
+enum ConditionType {
+  PCOS
+  PCOD
+  PREDIABETES
+  DIABETES_TYPE1
+  DIABETES_TYPE2
+  THYROID_HYPO
+  THYROID_HYPER
+  HYPERTENSION
+  HIGH_CHOLESTEROL
+  ANEMIA
+  IRON_DEFICIENCY
+  VITAMIN_D_DEFICIENCY
+  VITAMIN_B12_DEFICIENCY
+  EATING_DISORDER
+  DEPRESSION
+  ANXIETY
+  SLEEP_APNEA
+  ENDOMETRIOSIS
+  FIBROIDS
+  IBS
+  OTHER
+}
+
+enum LabType {
+  HBA1C
+  FASTING_GLUCOSE
+  FASTING_INSULIN
+  LDL
+  HDL
+  TRIGLYCERIDES
+  TSH
+  T3
+  T4
+  FERRITIN
+  HEMOGLOBIN
+  VITAMIN_D
+  VITAMIN_B12
+  FOLATE
+  IRON_SERUM
+}
+
+enum CycleRegularity {
+  REGULAR
+  IRREGULAR
+  UNKNOWN
+}
+
+enum FlowLevel {
+  SPOTTING
+  LIGHT
+  MEDIUM
+  HEAVY
+  VERY_HEAVY
+}
+
+enum CycleEventType {
+  PERIOD_START
+  PERIOD_END
+  OVULATION_TEST_POSITIVE
+  SPOTTING
+}
+
+enum DietType {
+  VEGETARIAN
+  VEGAN
+  PESCATARIAN
+  EGGETARIAN
+  NON_VEG
+  JAIN
+  HALAL
+  KOSHER
+  OMNIVORE
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  PRE_WORKOUT
+  POST_WORKOUT
+}
+
+enum ExperienceLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum WorkoutLocation {
+  HOME
+  GYM
+  OUTDOORS
+  ANY
+}
+
+enum GoalType {
+  LOSE_WEIGHT
+  GAIN_WEIGHT
+  MAINTAIN_WEIGHT
+  GAIN_MUSCLE
+  TONE_BODY
+  IMPROVE_STAMINA
+  PCOS_SUPPORTIVE
+  PREDIABETES_SUPPORTIVE
+  IMPROVE_DIET_QUALITY
+  IMPROVE_CYCLE_TRACKING
+  IMPROVE_ENERGY
+  REDUCE_CRAVINGS
+  HYDRATION
+  INTERMITTENT_FASTING
+}
+
+enum GoalPriority {
+  FASTER_PROGRESS
+  BALANCED
+  EASIER_SUSTAINABILITY
+}
+
+enum DeviceProvider {
+  APPLE_HEALTHKIT
+  ANDROID_HEALTH_CONNECT
+  FITBIT
+  GARMIN
+}
+
+enum DeviceSampleType {
+  STEPS
+  SLEEP_DURATION
+  HEART_RATE
+  ACTIVE_ENERGY
+  RESTING_HEART_RATE
+  WEIGHT
+  BLOOD_OXYGEN
+}
+
+enum RuleStatus {
+  DRAFT
+  STAGED
+  LIVE
+  ARCHIVED
+}
+
+enum RuleCategory {
+  PCOS
+  PREDIABETES
+  PREGNANCY_BREASTFEEDING
+  DEFICIENCY
+  INJURY
+  ED_RISK
+  CYCLE_ADJUSTMENT
+  RED_FLAG
+  AI_SAFETY
+}
+
+enum SafetyFlagSeverity {
+  URGENT
+  HIGH
+  REVIEW
+}
+
+enum ConsentType {
+  HEALTH_DATA
+  AI_PERSONALIZATION
+  DEVICE_SYNC
+  NUTRITION_TRACKING
+  CYCLE_TRACKING
+  ANONYMOUS_RESEARCH
+}
+
+// ── Core user tables ─────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+
+  profile          UserProfile?
+  consents         UserConsent[]
+  measurements     BodyMeasurement[]
+  conditions       HealthCondition[]
+  labs             Lab[]
+  medications      Medication[]
+  cycleProfile     CycleProfile?
+  cycleEvents      CycleEvent[]
+  symptomLogs      SymptomLog[]
+  dietPreference   DietPreference?
+  fitnessPreference FitnessPreference?
+  goals            Goal[]
+  mealLogs         MealLog[]
+  nutritionSummaries NutritionDailySummary[]
+  waterLogs        WaterLog[]
+  workoutPlans     WorkoutPlan[]
+  workoutSessions  WorkoutSession[]
+  deviceIntegrations DeviceIntegration[]
+  deviceSamples    DeviceSample[]
+  conversations    AIConversation[]
+  safetyFlags      SafetyFlag[]
+  auditEvents      AuditEvent[]
+
+  @@index([clerkId])
+  @@index([email])
+  @@map("users")
+}
+
+model UserProfile {
+  id               String          @id @default(cuid())
+  userId           String          @unique
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  firstName        String?
+  lastName         String?
+  nickname         String?
+  dateOfBirth      DateTime?
+  country          String?
+  unitSystem       UnitSystem      @default(METRIC)
+  biologicalSex    BiologicalSex?
+  genderIdentity   String?
+  pregnancyStatus  PregnancyStatus @default(NO)
+  onboardingComplete Boolean       @default(false)
+  onboardingStep   Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@map("user_profiles")
+}
+
+model UserConsent {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  consentType ConsentType
+  version     String
+  accepted    Boolean
+  acceptedAt  DateTime    @default(now())
+  ipHash      String?
+
+  @@index([userId, consentType])
+  @@map("user_consents")
+}
+
+// ── Body & health data ───────────────────────────────────────
+
+model BodyMeasurement {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  measuredAt   DateTime @default(now())
+  weightKg     Float?
+  heightCm     Float?
+  waistCm      Float?
+  hipCm        Float?
+  bodyFatPct   Float?
+  source       String   @default("manual")  // manual | device
+
+  // Calculated and cached
+  bmi          Float?
+  whr          Float?
+  waistToHeight Float?
+  bri          Float?
+  bmrKcal      Float?
+  tdeeKcal     Float?
+
+  @@index([userId, measuredAt(sort: Desc)])
+  @@map("body_measurements")
+}
+
+model HealthCondition {
+  id                  String        @id @default(cuid())
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  conditionType       ConditionType
+  status              String        @default("self_reported")  // self_reported | clinician_diagnosed
+  diagnosedByClinician Boolean      @default(false)
+  diagnosedAt         DateTime?
+  notes               String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@index([userId])
+  @@map("health_conditions")
+}
+
+model Lab {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  labType    LabType
+  value      Float
+  unit       String
+  recordedAt DateTime
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId, labType])
+  @@map("labs")
+}
+
+model Medication {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name       String
+  doseInfo   String?
+  prescribed Boolean  @default(false)
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@map("medications")
+}
+
+// ── Cycle data ───────────────────────────────────────────────
+
+model CycleProfile {
+  id              String          @id @default(cuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  avgLengthDays   Int?
+  avgPeriodDays   Int?
+  regularity      CycleRegularity @default(UNKNOWN)
+  typicalFlow     FlowLevel?
+  typicalPainScore Int?
+  birthControl    Boolean         @default(false)
+  birthControlType String?
+  tryingToConceive Boolean        @default(false)
+  updatedAt       DateTime        @updatedAt
+
+  @@map("cycle_profiles")
+}
+
+model CycleEvent {
+  id          String         @id @default(cuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  eventType   CycleEventType
+  startDate   DateTime
+  endDate     DateTime?
+  flowLevel   FlowLevel?
+  painScore   Int?           // 0–10
+  notes       String?
+  createdAt   DateTime       @default(now())
+
+  @@index([userId, startDate(sort: Desc)])
+  @@map("cycle_events")
+}
+
+model SymptomLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  loggedAt    DateTime @default(now())
+  symptoms    Json     @default("[]")  // string[] — cramps, bloating, fatigue, cravings, mood_low, headache, spotting, dizziness, etc.
+  energyScore Int?     // 1–10
+  moodScore   Int?     // 1–10
+  notes       String?
+
+  @@index([userId, loggedAt(sort: Desc)])
+  @@map("symptom_logs")
+}
+
+// ── Diet & fitness preferences ───────────────────────────────
+
+model DietPreference {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  dietType        DietType @default(OMNIVORE)
+  allergies       Json     @default("[]")   // string[]
+  intolerances    Json     @default("[]")   // string[]
+  cuisinePrefs    Json     @default("[]")   // string[]
+  mealFrequency   Int      @default(3)      // meals per day
+  cookingAbility  String   @default("basic") // none | basic | advanced
+  budget          String   @default("medium") // low | medium | high
+  eatingSchedule  String   @default("normal") // normal | shift_work | late_night
+  ifInterest      Boolean  @default(false)
+  dislikedFoods   Json     @default("[]")
+  updatedAt       DateTime @updatedAt
+
+  @@map("diet_preferences")
+}
+
+model FitnessPreference {
+  id              String          @id @default(cuid())
+  userId          String          @unique
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  location        WorkoutLocation @default(HOME)
+  equipment       Json            @default("[]")   // string[]
+  weightLifting   Boolean         @default(false)
+  swimming        Boolean         @default(false)
+  running         Boolean         @default(false)
+  experienceLevel ExperienceLevel @default(BEGINNER)
+  daysPerWeek     Int             @default(3)       // 2–6
+  sessionMinutes  Int             @default(30)      // 15 | 30 | 45 | 60
+  injuries        Json            @default("[]")   // string[]
+  dislikedExercises Json          @default("[]")
+  updatedAt       DateTime        @updatedAt
+
+  @@map("fitness_preferences")
+}
+
+// ── Goals ────────────────────────────────────────────────────
+
+model Goal {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  goalType        GoalType
+  targetWeightKg  Float?
+  targetDate      DateTime?
+  priority        GoalPriority  @default(BALANCED)
+  active          Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+
+  @@index([userId, active])
+  @@map("goals")
+}
+
+// ── Nutrition ────────────────────────────────────────────────
+
+model FoodItem {
+  id           String   @id @default(cuid())
+  name         String
+  source       String   @default("usda")  // usda | custom | branded
+  usdaFdcId    String?  @unique
+  barcode      String?
+  category     String?
+  nutrients    Json     // { calories, protein_g, carbs_g, fat_g, fiber_g, iron_mg, ... }
+  servingSize  Float    @default(100)    // grams
+  servingUnit  String   @default("g")
+  userId       String?  // null = global, set = user custom food
+
+  @@index([name])
+  @@index([usdaFdcId])
+  @@index([barcode])
+  @@map("food_items")
+}
+
+model MealLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  loggedAt    DateTime @default(now())
+  mealType    MealType
+  foodItemId  String
+  foodItem    FoodItem @relation(fields: [foodItemId], references: [id])
+  quantityG   Float    // grams consumed
+
+  // Computed from food item + quantity
+  calories    Float
+  proteinG    Float
+  carbsG      Float
+  fatG        Float
+  fiberG      Float
+  micros      Json     @default("{}")  // { iron_mg, b12_mcg, vit_d_iu, ... }
+
+  @@index([userId, loggedAt(sort: Desc)])
+  @@map("meal_logs")
+}
+
+model NutritionDailySummary {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date          DateTime @db.Date
+  calories      Float    @default(0)
+  proteinG      Float    @default(0)
+  carbsG        Float    @default(0)
+  fatG          Float    @default(0)
+  fiberG        Float    @default(0)
+  waterMl       Float    @default(0)
+  micros        Json     @default("{}")
+
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date(sort: Desc)])
+  @@map("nutrition_daily_summaries")
+}
+
+model WaterLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  loggedAt  DateTime @default(now())
+  amountMl  Float
+
+  @@index([userId, loggedAt(sort: Desc)])
+  @@map("water_logs")
+}
+
+// ── Workouts ─────────────────────────────────────────────────
+
+model Exercise {
+  id                String   @id @default(cuid())
+  name              String
+  category          String   // strength | cardio | mobility | low_impact | conditioning | recovery
+  equipment         Json     @default("[]")   // string[]
+  muscleGroups      Json     @default("[]")   // string[]
+  contraindications Json     @default("[]")   // string[] — condition types or injury types
+  instructions      String?
+  imageUrl          String?
+  videoUrl          String?
+  published         Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([name])
+  @@map("exercises")
+}
+
+model WorkoutPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  generatedAt DateTime @default(now())
+  cyclePhase  String?  // menstrual | follicular | ovulation_estimate | luteal
+  exercises   Json     // WorkoutExercise[]
+  durationMin Int
+  rpeTarget   Int?     // 1–10
+  backup      Json?    // backup workout exercises
+
+  sessions    WorkoutSession[]
+
+  @@index([userId, generatedAt(sort: Desc)])
+  @@map("workout_plans")
+}
+
+model WorkoutSession {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  workoutPlanId String
+  workoutPlan   WorkoutPlan @relation(fields: [workoutPlanId], references: [id])
+
+  startedAt     DateTime    @default(now())
+  completedAt   DateTime?
+  rpe           Int?        // 1–10 perceived exertion
+  caloriesEst   Float?
+  usedBackup    Boolean     @default(false)
+  notes         String?
+
+  @@index([userId, startedAt(sort: Desc)])
+  @@map("workout_sessions")
+}
+
+// ── Device data ───────────────────────────────────────────────
+
+model DeviceIntegration {
+  id          String         @id @default(cuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider    DeviceProvider
+  linkedAt    DateTime       @default(now())
+  permissions Json           @default("[]")  // string[] — steps, sleep, heart_rate, etc.
+  active      Boolean        @default(true)
+  unlinkedAt  DateTime?
+
+  samples     DeviceSample[]
+
+  @@unique([userId, provider])
+  @@map("device_integrations")
+}
+
+model DeviceSample {
+  id            String            @id @default(cuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  integrationId String
+  integration   DeviceIntegration @relation(fields: [integrationId], references: [id])
+
+  sampleType    DeviceSampleType
+  value         Float
+  unit          String
+  recordedAt    DateTime
+  source        String?
+
+  @@unique([userId, sampleType, recordedAt])
+  @@index([userId, sampleType, recordedAt(sort: Desc)])
+  @@map("device_samples")
+}
+
+// ── AI chat ───────────────────────────────────────────────────
+
+model AIConversation {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  startedAt       DateTime @default(now())
+  modelUsed       String   @default("gpt-4o")
+  contextSnapshot Json?    // user health context at conversation start
+
+  messages        AIMessage[]
+
+  @@index([userId, startedAt(sort: Desc)])
+  @@map("ai_conversations")
+}
+
+model AIMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  role           String         // user | assistant | tool
+  content        String?        // encrypted in Phase 11
+  toolCalls      Json?          // function calls made
+  ruleChecks     Json?          // { ruleId, passed, note }[]
+  flagged        Boolean        @default(false)
+  flagReason     String?
+  createdAt      DateTime       @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("ai_messages")
+}
+
+// ── Rules & safety ────────────────────────────────────────────
+
+model RuleSet {
+  id          String       @id @default(cuid())
+  version     String       @unique  // "4.2.1"
+  category    RuleCategory
+  rules       Json         // Rule[]
+  status      RuleStatus   @default(DRAFT)
+  deployedAt  DateTime?
+  deployedBy  String?
+  createdAt   DateTime     @default(now())
+  notes       String?
+
+  @@index([category, status])
+  @@map("rule_sets")
+}
+
+model SafetyFlag {
+  id          String             @id @default(cuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  severity    SafetyFlagSeverity
+  ruleId      String?            // e.g. "R-029"
+  signal      String             // human-readable description
+  context     Json?              // snapshot of user state when triggered
+  triggeredAt DateTime           @default(now())
+  resolvedAt  DateTime?
+  resolvedBy  String?            // admin userId
+  notes       String?
+
+  @@index([severity, resolvedAt])
+  @@index([userId])
+  @@map("safety_flags")
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  actorId    String?  // userId or admin userId
+  user       User?    @relation(fields: [actorId], references: [id])
+
+  action     String   // e.g. "AI_RESPONSE_APPROVED", "SAFETY_FLAG_RESOLVED"
+  resource   String   // e.g. "AIMessage", "SafetyFlag"
+  resourceId String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([resource, resourceId])
+  @@index([createdAt(sort: Desc)])
+  @@map("audit_events")
+}
+
+// Fix: FoodItem needs relation field
+// Note: MealLog references FoodItem — no cascade on food items
